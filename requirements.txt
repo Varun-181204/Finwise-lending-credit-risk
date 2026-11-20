@@ -1,6 +1,7 @@
 # FinWise Lending - Credit Risk Assessment System
-# Week 1: Minimal dependencies for Research & Initial Ingestion Pipeline
-# Note: Production ML (XGBoost, SHAP), API (FastAPI), and serving dependencies will be added in subsequent milestones.
+# Week 1-3 Dependencies: Ingestion, Preprocessing & Baseline Model
+# Note: XGBoost, SHAP, FastAPI, and serving dependencies will be added in subsequent milestones.
 
 pandas>=2.2.0
 pytest>=8.0.0
+scikit-learn>=1.4.0

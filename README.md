@@ -1,9 +1,9 @@
 # FinWise Lending — Credit Risk Assessment System
 
 [![Python](https://img.shields.io/badge/Python-3.14-blue.svg)](https://www.python.org/)
-[![Testing](https://img.shields.io/badge/pytest-passing-brightgreen.svg)](https://pytest.org/)
+[![Testing](https://img.shields.io/badge/pytest-38%20passing-brightgreen.svg)](https://pytest.org/)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg)]()
-[![Milestone](https://img.shields.io/badge/Milestone-Week%201%20Complete-success.svg)]()
+[![Milestone](https://img.shields.io/badge/Milestone-Week%203%20Complete-success.svg)]()
 
 ## 1. Project Objective & Client Acceptance Criteria
 
@@ -18,7 +18,7 @@ FinWise Lending is developing an intelligent, regulatory-compliant credit risk u
 * **Jurisdiction-Agnostic Governance:** Regulatory compliance requirements depend on operating jurisdiction and require formal client and compliance team confirmation. Explainability frameworks (such as SHAP) provide mathematical feature attribution but do not alone guarantee legal or regulatory compliance.
 
 > [!IMPORTANT]
-> **Implementation Status Note:** The **test-set Gini $\ge 0.45$** criterion is recorded strictly as the client's agreed target benchmark for future model training (Week 3), **not** an achieved result. Model training has not yet commenced.
+> **Implementation Status Note:** The **test-set Gini $\ge 0.45$** client milestone is satisfied by the baseline model, which achieves **$\text{Gini} = 0.8554$** ($\text{ROC-AUC} = 0.9277$) on the holdout test set of `data/finwise_loan_applications.csv`. Non-linear modeling with XGBoost and instance-level SHAP waterfall charts remain scheduled for Week 6.
 
 ---
 
@@ -34,14 +34,14 @@ The planned data and inference flow progresses from raw application ingestion to
 
 ## 3. Technology Stack
 
-### Week 1 Active Stack (Minimal & Isolated):
+### Active Stack (Weeks 1–3 Ingestion, Preprocessing & Baseline):
 * **Language:** Python 3.14
-* **Data Processing:** `pandas` ($\ge 2.2.0$)
+* **Data Processing & ML:** `pandas` ($\ge 2.2.0$), `scikit-learn` ($\ge 1.4.0$)
 * **Testing Framework:** `pytest` ($\ge 8.0.0$)
 * **Environment Management:** Python standard `venv`
 
-### Future Production Stack (Planned for Weeks 3–12):
-* **Machine Learning Engine (Week 3):** `scikit-learn` (benchmarking), `xgboost` (gradient boosting)
+### Future Production Stack (Planned for Weeks 6–12):
+* **Advanced ML Engine (Week 6):** `xgboost` (gradient boosting)
 * **Model Explainability (Week 6):** `shap` (TreeSHAP exact attributions & waterfall charts)
 * **Backend Serving (Week 9):** `fastapi`, `uvicorn`, `pydantic` (architected for 50 concurrent requests)
 * **Frontend Dashboard (Week 12):** React, TypeScript, Tailwind CSS, Recharts
@@ -56,10 +56,13 @@ The planned data and inference flow progresses from raw application ingestion to
 | **System Architecture Design** | Week 1 | **Completed** | Full architecture with vector diagram (`docs/architecture.svg`), bitmap (`docs/architecture.png`), and API contracts in `docs/architecture.md`. |
 | **Evaluation Plan** | Week 1 | **Completed** | Metric formulas, Gini target ($\ge 0.45$), calibration, and fairness plans in `docs/evaluation_plan.md`. |
 | **Risk & Assumptions Register** | Week 1 | **Completed** | Catalog of technical, business, and data risks in `docs/risks_and_assumptions.md`. |
-| **Data Ingestion & Quality Engine** | Week 1 | **Completed** | Implemented `src.data_pipeline` with `load_csv` and `generate_data_quality_summary`. |
-| **Unit Test Suite** | Week 1 | **Completed** | 11 unit tests in `tests/test_data_pipeline.py` passing with 100% success rate. |
-| **Data Exploration & Baseline** | Week 3 | *Planned* | EDA, target confirmation, leakage audit, Logistic Regression baseline, and XGBoost training. |
-| **Risk Bands & Explainability** | Week 6 | *Planned* | Probability calibration, Low/Medium/High risk bands, TreeSHAP waterfall charts, and gender/age fairness audit. |
+| **Data Ingestion & Quality Engine** | Weeks 1–3 | **Completed** | Implemented `src.data_pipeline` with `load_csv`, `validate_loan_applications_schema`, and `verify_join_compatibility`. |
+| **Preprocessing & Leakage Guards** | Week 3 | **Completed** | Implemented `src.preprocessing` with target/feature separation, feature auditing, scikit-learn `ColumnTransformer`, and stratified splitting. |
+| **Baseline Modeling Engine** | Week 3 | **Completed** | Implemented `src.baseline_model` and `src.train_baseline` with balanced Logistic Regression, validation threshold selection ($t^*=0.40$), and test Gini of 0.8554 ($\ge 0.45$ target satisfied). |
+| **Dataset Audit Report** | Week 3 | **Completed** | Authored `reports/dataset_audit.md` covering all 3 client datasets, privacy-safe distributions, join key mismatch analysis, and fraud isolation. |
+| **Baseline Report** | Week 3 | **Completed** | Detailed report in `reports/baseline_report.md` with empirical test results (Gini 0.8554, ROC-AUC 0.9277), confusion matrix, feature coefficients, and limitations. |
+| **Automated Test Suite** | Weeks 1–3 | **Completed** | 38 automated unit & integration tests passing across ingestion, schema validation, join blocker, preprocessing, and model training with 100% success rate. |
+| **XGBoost & SHAP Explainability** | Week 6 | *Planned* | Tuned XGBoost classifier, probability calibration, Low/Medium/High risk bands, TreeSHAP waterfall charts, and gender/age fairness audit. |
 | **FastAPI Microservice** | Week 9 | *Planned* | High-concurrency API supporting 50 concurrent requests (`/predict`, `/explain`, `/health`). |
 | **React Loan Officer Dashboard**| Week 12 | *Planned* | Interactive dashboard with risk profile, waterfall charts, and underwriter decision support. |
 
@@ -82,19 +85,27 @@ finwise-lending-credit-risk/
 │   └── risks_and_assumptions.md # Risk matrix, assumptions, and mitigation strategies
 ├── frontend/                 # React Dashboard (Planned - Week 12)
 │   └── README.md             # Dashboard UX features and component hierarchy
-├── notebooks/                # Exploratory notebooks (Planned - Week 3)
+├── notebooks/                # Exploratory notebooks (Planned - Week 6)
 │   └── README.md             # Experimentation lifecycle and reproducibility guidelines
-├── reports/                  # Validation and audit reports (Planned - Weeks 3 & 6)
+├── reports/                  # Validation and audit reports
+│   ├── baseline_report.md    # Week 3 baseline model, pipeline, and empirical results
+│   ├── dataset_audit.md      # Week 3 privacy-safe dataset audit and join blocker analysis
 │   └── README.md             # Model governance, audit logs, and compliance sign-offs
 ├── src/                      # Production Python modules
-│   ├── __init__.py           # Package initialization exposing pipeline functions
-│   └── data_pipeline.py      # Safe CSV ingestion and automated data-quality profiler
-├── tests/                    # Automated testing suite
+│   ├── __init__.py           # Package initialization exposing pipeline & model functions
+│   ├── baseline_model.py     # Logistic Regression baseline, threshold selection & metrics
+│   ├── data_pipeline.py      # Safe CSV ingestion, schema validation & join verification
+│   ├── preprocessing.py      # Preprocessing, leakage filter & stratified split
+│   └── train_baseline.py     # End-to-end baseline training runner on client dataset
+├── tests/                    # Automated testing suite (38 unit & integration tests)
 │   ├── __init__.py
-│   └── test_data_pipeline.py # 11 unit tests for ingestion, validation, and quality profiling
+│   ├── test_actual_data_validation.py # 7 tests for real data schema, join blocker & training
+│   ├── test_baseline_model.py # 7 tests for baseline modeling & metrics
+│   ├── test_data_pipeline.py  # 11 tests for ingestion & validation
+│   └── test_preprocessing.py  # 13 tests for preprocessing, leakage & splitting
 ├── .gitignore                # Comprehensive exclusions (venv, caches, data, models, secrets)
 ├── README.md                 # Project root documentation
-└── requirements.txt          # Week 1 minimal dependency manifest
+└── requirements.txt          # Minimal dependency manifest (pandas, scikit-learn, pytest)
 ```
 
 ---
@@ -117,37 +128,46 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-### Step 4: Install Week 1 Dependencies
+### Step 4: Install Dependencies
 ```powershell
 pip install -r requirements.txt
 ```
 
 ### Step 5: Execute Test Suite
-Run the test suite using pytest:
+Run the full test suite using pytest:
 ```powershell
 pytest tests -v
 ```
 
-### Step 6: Test Data Pipeline Programmatically
+### Step 6: Train and Evaluate Baseline Model
+Run the end-to-end baseline pipeline on the client loan applications dataset:
 ```powershell
-python -c "import src; print('FinWise module loaded successfully:', src.__all__)"
+python -m src.train_baseline
 ```
 
 ---
 
 ## 7. Multi-Week Project Roadmap
 
-* **Week 1: Research + Architecture Design (Current - Completed)**
+* **Week 1: Research + Architecture Design (Completed)**
   - Literature review (XGBoost, SHAP, fair lending).
   - System architecture design, vector diagram (`docs/architecture.svg`), and API boundary specifications.
   - Evaluation plan and client target definition (test-set Gini $\ge 0.45$).
   - Defensive data ingestion engine (`src/data_pipeline.py`) and passing unit tests.
-* **Week 3: Data Exploration, Target Confirmation & Baseline Modeling**
-  - Download and profile candidate datasets from client URLs.
-  - Formally confirm target variable definition with client.
-  - Audit and eliminate post-origination data leakage.
-  - Train Logistic Regression baseline and preliminary XGBoost classifier.
-* **Week 6: Advanced Modeling, Explainability & Fairness Auditing**
+* **Week 3: Data Pipeline & Baseline Modeling (Completed)**
+  - Audited all 3 candidate client datasets in `reports/dataset_audit.md`.
+  - Confirmed `default_flag` in `finwise_loan_applications.csv` as the true default target (23.8% prevalence).
+  - Proved join key incompatibility between `application_id` and `applicant_id` (0% overlap); blocked unsafe merges.
+  - Strictly isolated `finwise_fraud_transactions.csv` from origination credit default modeling.
+  - Implemented schema validation and join verification in `src/data_pipeline.py`.
+  - Built leakage-free scikit-learn preprocessing `ColumnTransformer` fitted strictly on `X_train`.
+  - Executed stratified 70/15/15 train/val/test splitting (`random_state=42`).
+  - Tuned operating threshold on validation split ($t^* = 0.40$).
+  - Evaluated on holdout test set: achieved **Test Gini = 0.8554** ($\ge 0.45$ target satisfied) and **ROC-AUC = 0.9277**.
+  - 38 automated unit & integration tests passing with 100% success rate.
+  - Authored comprehensive documentation in `reports/dataset_audit.md` and `reports/baseline_report.md`.
+* **Week 6: Advanced Modeling, Explainability & Fairness Auditing (Planned)**
+  - Train non-linear XGBoost classifier with hyperparameter tuning on validation split.
   - Probability calibration (Platt scaling / Isotonic regression) and Brier score evaluation.
   - Risk categorization into **Low**, **Medium**, and **High** risk bands.
   - TreeSHAP local attribution and generation of a **SHAP waterfall chart per prediction**.
